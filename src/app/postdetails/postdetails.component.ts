@@ -9,12 +9,17 @@ import { MatIcon } from '@angular/material/icon';
 import { PostService } from '../api-client/services/post.service';
 import { PostDto } from '../api-client/models';
 import { PostControllerService } from '../api-client/services/post-controller.service';
+import { ActivatedRoute, RouterLink, RouterModule } from '@angular/router';
+import { Router } from 'express';
 
 @Component({
   selector: 'app-post-list',
   templateUrl: './postdetails.component.html',
   styleUrls: ['./postdetails.component.css'],
-  imports: [MatPaginator,MatTableModule,MatSort, MatFormField, MatLabel]
+  imports: [MatPaginator,MatTableModule,MatSort, MatFormField, MatLabel,
+    RouterModule
+  ],
+  standalone: true
 })
 export class PostComponent implements OnInit, AfterViewInit {
   
@@ -36,7 +41,10 @@ categoryId?: number;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private postControllerService: PostControllerService) {}
+  constructor(private postControllerService: PostControllerService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngAfterViewInit(): void {
     this.paginator.page.subscribe(event =>{

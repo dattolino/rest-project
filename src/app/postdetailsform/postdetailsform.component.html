@@ -1,1 +1,26 @@
-<p>postdetailsform works!</p>
+<h1>Add new product</h1>
+<form [formGroup]="postDetailsForm!" (ngSubmit)="updateProduct()">
+  <mat-form-field>
+    <mat-label>Titolo</mat-label>
+    <input formControlName="title" matInput required />
+    <mat-error>Title is required</mat-error>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Descrizione</mat-label>
+    <input formControlName="description" matInput required />
+    <mat-error>Description is required</mat-error>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Contenuto</mat-label>
+    <input formControlName="content" matInput required />
+    <mat-error>Content is required</mat-error>
+  </mat-form-field> 
+  <div>
+    <button
+      mat-raised-button
+      type="submit"
+      [disabled]="postDetailsForm.invalid">
+      Update
+    </button>
+  </div>
+</form>
