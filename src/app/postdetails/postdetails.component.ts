@@ -9,25 +9,35 @@ import { MatIcon } from '@angular/material/icon';
 import { PostService } from '../api-client/services/post.service';
 import { PostDto } from '../api-client/models';
 import { PostControllerService } from '../api-client/services/post-controller.service';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-post-list',
   templateUrl: './postdetails.component.html',
   styleUrls: ['./postdetails.component.css'],
-  imports: [MatPaginator,MatTableModule,MatSort, MatFormField, MatLabel]
+  imports: [
+    MatPaginator,
+    MatTableModule,
+    MatSort,
+    MatFormField,
+    MatLabel,
+    RouterLink
+  ],
 })
 export class PostComponent implements OnInit, AfterViewInit {
-  
-deletePost(arg0: any) {
+  deletePost(arg0: any) {}
+  editPost(arg0: any) {}
+  categoryId?: number;
 
-}
-editPost(arg0: any) {
-
-}
-categoryId?: number;
-
-  displayedColumns: string[] = ['id', 'title', 'description', 'content', 'actions'];
-  dataSource! : MatTableDataSource<PostDto>;
+  displayedColumns: string[] = [
+    'id',
+    'title',
+    'description',
+    'content',
+    'actions',
+  ];
+  dataSource!: MatTableDataSource<PostDto>;
 
   //pageNo : number = 0;
   //pageSize : number = 20;
@@ -36,16 +46,20 @@ categoryId?: number;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private postControllerService: PostControllerService) {}
+  constructor(
+    private postControllerService: PostControllerService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private builder: FormBuilder
+  ) {}
 
   ngAfterViewInit(): void {
-    this.paginator.page.subscribe(event =>{
+    this.paginator.page.subscribe((event) => {
       this.paginator.pageIndex = event.pageIndex;
       this.paginator.length = event.pageSize;
-      
+
       this.refresh();
-    })
-    
+    });
   }
 
   ngOnInit(): void {
@@ -59,16 +73,15 @@ categoryId?: number;
     this.refresh();
   }
 
-  refresh(): void{
-    this.postControllerService.getAllPosts(this.paginator.pageIndex, this.paginator.length)
-    .subscribe((data) => {
-      
-      console.log('ok');
-      this.dataSource.data = data.content;
-      this.paginator.length = data.totalElements;
-      this.paginator.pageIndex = data.pageNo;
-      
-    });
+  refresh(): void {
+    this.postControllerService
+      .getAllPosts(this.paginator.pageIndex, this.paginator.length)
+      .subscribe((data) => {
+        console.log('ok');
+        this.dataSource.data = data.content;
+        this.paginator.length = data.totalElements;
+        this.paginator.pageIndex = data.pageNo;
+      });
   }
 
   applyFilter(event: Event) {
