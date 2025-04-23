@@ -5,12 +5,13 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatInput, MatLabel } from '@angular/material/input';
 import { MatFormField, MatError, MatSuffix } from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { PostService } from '../api-client/services/post.service';
 import { PostDto } from '../api-client/models';
 import { PostControllerService } from '../api-client/services/post-controller.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
+import { PostdetailsformComponent } from '../postdetailsform/postdetailsform.component';
 
 @Component({
   selector: 'app-post-list',
@@ -20,21 +21,19 @@ import { FormBuilder } from '@angular/forms';
     MatPaginator,
     MatTableModule,
     MatSort,
-    MatFormField,
-    MatLabel,
-    RouterLink
+    RouterLink,
+    MatIconModule
   ],
 })
 export class PostComponent implements OnInit, AfterViewInit {
   deletePost(arg0: any) {}
-  editPost(arg0: any) {}
-  categoryId?: number;
 
   displayedColumns: string[] = [
     'id',
     'title',
     'description',
     'content',
+    'categoryId',
     'actions',
   ];
   dataSource!: MatTableDataSource<PostDto>;
@@ -55,8 +54,8 @@ export class PostComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.paginator.page.subscribe((event) => {
-      this.paginator.pageIndex = event.pageIndex;
-      this.paginator.length = event.pageSize;
+      //this.paginator.pageIndex = event.pageIndex;
+      //this.paginator.pageSize = event.pageSize;
 
       this.refresh();
     });
@@ -65,7 +64,7 @@ export class PostComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.dataSource = new MatTableDataSource<PostDto>();
 
-    this.paginator.length = 20;
+    this.paginator.pageSize = 20;
     this.dataSource.paginator = this.paginator;
 
     this.dataSource.sort = this.sort;
@@ -75,13 +74,19 @@ export class PostComponent implements OnInit, AfterViewInit {
 
   refresh(): void {
     this.postControllerService
-      .getAllPosts(this.paginator.pageIndex, this.paginator.length)
+      .getAllPosts(this.paginator.pageIndex, this.paginator.pageSize)
       .subscribe((data) => {
         console.log('ok');
         this.dataSource.data = data.content;
         this.paginator.length = data.totalElements;
         this.paginator.pageIndex = data.pageNo;
       });
+  }
+
+  deletePostSelected(id:number){
+    console.log(id);
+    this.postControllerService.deletePost(id)
+    .subscribe(() => this.refresh());
   }
 
   applyFilter(event: Event) {
