@@ -4,7 +4,7 @@ import { PostComponent } from './postdetails/postdetails.component';
 
 @Component({
   selector: 'app-root',
-  imports: [PostComponent, RouterOutlet],
+  imports: [RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

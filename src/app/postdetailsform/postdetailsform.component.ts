@@ -5,10 +5,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInput, MatFormField, MatError, MatLabel } from '@angular/material/input';
 import { PostControllerService } from '../api-client/services/post-controller.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PostDto } from '../api-client/models';
 import { MatGridListModule } from '@angular/material/grid-list';
-
-
 
 @Component({
   selector: 'app-postdetailsform',
@@ -20,73 +17,67 @@ import { MatGridListModule } from '@angular/material/grid-list';
     MatError,
     MatLabel,
     MatSelectModule,
-    MatGridListModule,
+    MatGridListModule
   ],
   templateUrl: './postdetailsform.component.html',
   styleUrl: './postdetailsform.component.css',
 })
 export class PostdetailsformComponent implements OnInit {
+
   postDetailsForm!: FormGroup;
-  postId!: number;
-  isEditMode!: boolean;
+  currentId!: number;
+  //currentPost!: PostDto;
+  //categoryId = input<string>();
+  isEditMode: boolean = false;
 
   constructor(
     private postService: PostControllerService,
     private builder: FormBuilder,
     private route: ActivatedRoute,
-    private router: Router
-  ) {}
+    private router: Router,
+  ) { }
 
   ngOnInit(): void {
-    this.createForm();
-    this.route.paramMap.subscribe((params) => {
+    this.buildForm();
+    this.postDetailsForm.get('categoryId')?.disable();
+
+    this.route.paramMap.subscribe(params => {
       const idParam = params.get('id');
       if (idParam) {
         this.isEditMode = true;
-        this.postId = +idParam;
-        this.postService.getPost(this.postId).subscribe((post) => {
-          this.postDetailsForm.patchValue(post);
-        });
+        this.currentId = +idParam;
+        this.postService.getPost(this.currentId)
+          .subscribe(post => {
+            this.postDetailsForm.patchValue(post);
+          });
       }
     });
-
-
   }
 
   private buildForm() {
-    this.postDetailsForm = this.builder.nonNullable.group({
-      titolo: [''],
-      descrizione: [''],
-      contenuto: [''],
-    });
-  }
-
-  private createForm() {
     this.postDetailsForm = new FormGroup({
       title: new FormControl('', {
         nonNullable: true,
-        validators: Validators.required,
+        validators: Validators.required
       }),
       description: new FormControl('', {
         nonNullable: true,
-        validators: Validators.required,
+        validators: Validators.required
       }),
+      categoryId: new FormControl(),
       content: new FormControl('', {
         nonNullable: true,
-        validators: Validators.required,
-      }),
-      categoryId: new FormControl('', {
-        nonNullable: true,
-        validators: Validators.required,
-      }),
+        validators: Validators.required
+      })
     });
   }
 
-  updatePost() {
+  save() {
+    this.postDetailsForm.get('categoryId')?.enable();
     const postData = this.postDetailsForm.value;
 
     if (this.isEditMode) {
-      this.postService.updatePost(this.postId, postData).subscribe(() => {
+      this.postService.updatePost(this.currentId, postData).subscribe(() => {
         this.router.navigate(['/']);
       });
     } else {
@@ -96,9 +87,5 @@ export class PostdetailsformComponent implements OnInit {
     }
   }
 
-
-  }
-
-
-
+}
 
