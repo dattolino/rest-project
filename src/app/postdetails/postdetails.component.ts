@@ -20,53 +20,34 @@ import { FormBuilder } from '@angular/forms';
     MatPaginator,
     MatTableModule,
     MatSort,
-    MatFormField,
-    MatLabel,
-    RouterLink
+    MatButton,
+    RouterLink,
   ],
 })
-export class PostComponent implements OnInit, AfterViewInit {
+export class PostComponent implements OnInit {
   deletePost(arg0: any) {}
-  editPost(arg0: any) {}
-  categoryId?: number;
 
   displayedColumns: string[] = [
     'id',
     'title',
     'description',
     'content',
+    'categoryId',
     'actions',
   ];
   dataSource!: MatTableDataSource<PostDto>;
 
-  //pageNo : number = 0;
-  //pageSize : number = 20;
-  //totalItems : number = 0;
+  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort!: MatSort;
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-
-  constructor(
-    private postControllerService: PostControllerService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private builder: FormBuilder
-  ) {}
-
-  ngAfterViewInit(): void {
-    this.paginator.page.subscribe((event) => {
-      this.paginator.pageIndex = event.pageIndex;
-      this.paginator.length = event.pageSize;
-
-      this.refresh();
-    });
-  }
+  constructor(private postControllerService: PostControllerService) {}
 
   ngOnInit(): void {
     this.dataSource = new MatTableDataSource<PostDto>();
 
-    this.paginator.length = 20;
+    this.paginator.pageSize = 20;
     this.dataSource.paginator = this.paginator;
+    this.paginator.page.subscribe(() => this.refresh());
 
     this.dataSource.sort = this.sort;
 
@@ -75,7 +56,7 @@ export class PostComponent implements OnInit, AfterViewInit {
 
   refresh(): void {
     this.postControllerService
-      .getAllPosts(this.paginator.pageIndex, this.paginator.length)
+      .getAllPosts(this.paginator.pageIndex, this.paginator.pageSize)
       .subscribe((data) => {
         console.log('ok');
         this.dataSource.data = data.content;

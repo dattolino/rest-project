@@ -23,11 +23,16 @@
         <td mat-cell *matCellDef="let post">{{ post.content }}</td>
       </ng-container>
 
+      <ng-container matColumnDef="categoryId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Categoria</th>
+        <td mat-cell *matCellDef="let post">{{ post.categoryId }}</td>
+      </ng-container>
+
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Azioniasd</th>
+        <th mat-header-cell *matHeaderCellDef>Azioni</th>
         <td mat-cell *matCellDef="let post">
           <!-- Pulsanti per modifica e cancellazione -->
-          <button mat-button [routerLink]="['edit', post.id]">Modifica</button>
+          <button mat-raised-button [routerLink]="['posts', post.id]">Modifica</button>
 
         </td>
       </ng-container>
