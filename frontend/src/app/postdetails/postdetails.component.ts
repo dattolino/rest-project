@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -12,6 +12,9 @@ import { PostControllerService } from '../api-client/services/post-controller.se
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
 import { PostdetailsformComponent } from '../postdetailsform/postdetailsform.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { AlertComponent } from '../alert/alert.component';
+import { filter, map, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-post-list',
@@ -23,8 +26,10 @@ import { PostdetailsformComponent } from '../postdetailsform/postdetailsform.com
     MatSort,
     MatButton,
     RouterLink,
-    MatIconModule
+    MatIconModule,
+    MatDialogModule
   ],
+  standalone:true
 })
 export class PostComponent implements OnInit {
   deletePost(arg0: any) {}
@@ -38,6 +43,7 @@ export class PostComponent implements OnInit {
     'actions',
   ];
   dataSource!: MatTableDataSource<PostDto>;
+  readonly dialog = inject(MatDialog);
 
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
@@ -82,9 +88,15 @@ export class PostComponent implements OnInit {
   }
 
   deletePostSelected(id:number){
-    console.log(id);
-    this.postControllerService.deletePost(id)
-    .subscribe(() => this.refresh());
+    
+    this.dialog
+            .open(AlertComponent)
+            .afterClosed()
+            .pipe(
+              filter((response) => !!response),
+              switchMap(() => this.postControllerService.deletePost(id))
+            )
+            .subscribe(() => this.refresh());
   }
 
   applyFilter(event: Event) {

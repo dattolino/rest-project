@@ -10,6 +10,8 @@ import { CommonModule } from '@angular/common';
 import { CategoryControllerService } from '../api-client/services/category-controller';
 import { CategoryDto } from '../api-client/models';
 
+
+
 @Component({
   selector: 'app-postdetailsform',
   imports: [
@@ -22,7 +24,8 @@ import { CategoryDto } from '../api-client/models';
     MatSelectModule,
     MatGridListModule,
     CommonModule,
-    MatButtonModule
+    MatButtonModule,
+    MatButton
   ],
   templateUrl: './postdetailsform.component.html',
   styleUrl: './postdetailsform.component.css',
@@ -33,6 +36,7 @@ export class PostdetailsformComponent implements OnInit {
   currentId!: number;
   isEditMode: boolean = false;
   categories!: Array<CategoryDto>;
+  
 
   constructor(
     private postService: PostControllerService,
