@@ -35,6 +35,7 @@ export class PostComponent implements OnInit {
     'description',
     'content',
     'categoryId',
+    'categoryName',
     'actions',
   ];
   dataSource!: MatTableDataSource<PostDto>;

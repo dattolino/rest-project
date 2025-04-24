@@ -26,8 +26,13 @@
       <!--aggiungo il form categoria id per matchare perfettamente col backend?-->
       <ng-container matColumnDef="categoryId">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Id categoria</th>
-        <td mat-cell *matCellDef="let post">{{ post.categoryId }}
-        </td>
+        <td mat-cell *matCellDef="let post">{{ post.category.id }}
+      </ng-container>
+
+            <!--aggiungo il form categoria id per matchare perfettamente col backend?-->
+      <ng-container matColumnDef="categoryName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>nome categoria</th>
+        <td mat-cell *matCellDef="let post">{{ post.category.name }}
       </ng-container>
 
       <ng-container matColumnDef="actions">

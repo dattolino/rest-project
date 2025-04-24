@@ -64,8 +64,8 @@ public class CategoryController {
     // Build Delete Category REST API
     //@PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable("id") Long categoryId){
+    public ResponseEntity<Void> deleteCategory(@PathVariable("id") Long categoryId){
         categoryService.deleteCategory(categoryId);
-        return ResponseEntity.ok("Category deleted successfully!.");
+        return ResponseEntity.ok().build();
     }
 }

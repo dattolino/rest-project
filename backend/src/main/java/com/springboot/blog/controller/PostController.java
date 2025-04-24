@@ -119,11 +119,11 @@ public class PostController {
     // delete post rest api
     //@PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletePost(@PathVariable(name = "id") long id){
+    public ResponseEntity<Void> deletePost(@PathVariable(name = "id") long id){
 
         postService.deletePostById(id);
 
-        return new ResponseEntity<>("Post entity deleted successfully.", HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     // Build Get Posts by Category REST API
