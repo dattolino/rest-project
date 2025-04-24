@@ -22,9 +22,6 @@ export class PostControllerService {
   }
 
   updatePost(id: number, post: any): Observable<PostDto> {
-    console.log("pre-chiamata http");
-    console.log(id);
-    console.log(post);
     return this.http.put(`${this.baseUrl}/${id}`, post);
   }
 

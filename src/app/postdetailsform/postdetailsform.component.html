@@ -3,6 +3,7 @@
 }@else{
 <h1>Create the post</h1>
 }
+{{postDetailsForm.value | json}}
 <form [formGroup]="postDetailsForm!" (ngSubmit)="save()">
   <mat-form-field appearance="fill" >
     <mat-label>Titolo</mat-label>
@@ -14,11 +15,21 @@
     <input formControlName="description" matInput required/>
     <mat-error>description is required</mat-error>
   </mat-form-field>
-  <mat-form-field appearance="fill">
-    <mat-label>Categoria ID</mat-label>
-    <input formControlName="categoryId" matInput required/>
-    <mat-error></mat-error>
+  <mat-form-field>
+    <mat-label>Categoria</mat-label>
+    <mat-select formControlName="categoryId">
+      @for (category of categories; track category.id) {
+        <mat-option [value]="category.id">{{ category.name }}</mat-option>
+      }
+    </mat-select>
   </mat-form-field>
+  <!-- <mat-form-field>
+    <mat-label>Categoria</mat-label>
+    <mat-select formControlName="categoryId">
+      <mat-option [value]=1>Sport bello</mat-option>
+      <mat-option [value]=2>Finanza</mat-option>
+    </mat-select>
+   </mat-form-field> -->
   <mat-form-field appearance="fill">
     <mat-label>Contenuto</mat-label>
     <input formControlName="content" matInput required />

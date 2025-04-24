@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
+import { MatButton, MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInput, MatFormField, MatError, MatLabel } from '@angular/material/input';
 import { PostControllerService } from '../api-client/services/post-controller.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { CommonModule } from '@angular/common';
+import { CategoryControllerService } from '../api-client/services/category-controller';
+import { CategoryDto } from '../api-client/models';
 
 @Component({
   selector: 'app-postdetailsform',
@@ -17,7 +20,9 @@ import { MatGridListModule } from '@angular/material/grid-list';
     MatError,
     MatLabel,
     MatSelectModule,
-    MatGridListModule
+    MatGridListModule,
+    CommonModule,
+    MatButtonModule
   ],
   templateUrl: './postdetailsform.component.html',
   styleUrl: './postdetailsform.component.css',
@@ -26,20 +31,21 @@ export class PostdetailsformComponent implements OnInit {
 
   postDetailsForm!: FormGroup;
   currentId!: number;
-  //currentPost!: PostDto;
-  //categoryId = input<string>();
   isEditMode: boolean = false;
+  categories!: Array<CategoryDto>;
 
   constructor(
     private postService: PostControllerService,
-    private builder: FormBuilder,
+    private categoryService: CategoryControllerService,
     private route: ActivatedRoute,
     private router: Router,
   ) { }
 
   ngOnInit(): void {
     this.buildForm();
-    this.postDetailsForm.get('categoryId')?.disable();
+
+    this.categoryService.getCategories()
+    .subscribe(data => this.categories = data);
 
     this.route.paramMap.subscribe(params => {
       const idParam = params.get('id');
@@ -47,9 +53,7 @@ export class PostdetailsformComponent implements OnInit {
         this.isEditMode = true;
         this.currentId = +idParam;
         this.postService.getPost(this.currentId)
-          .subscribe(post => {
-            this.postDetailsForm.patchValue(post);
-          });
+          .subscribe(post => this.postDetailsForm.patchValue(post));
       }
     });
   }
@@ -73,7 +77,6 @@ export class PostdetailsformComponent implements OnInit {
   }
 
   save() {
-    this.postDetailsForm.get('categoryId')?.enable();
     const postData = this.postDetailsForm.value;
 
     if (this.isEditMode) {
